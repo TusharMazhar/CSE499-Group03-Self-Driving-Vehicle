@@ -10,6 +10,6 @@ Features of our self-driving vehicle:
 4.	Object detection - When a self-driving vehicle will see an object in-front it, It will automatically     change the lane with turn signal and after cross the object it will again come to the original lane.
 5.	Stop sign detection
 6.	This car will be moved one place to another with the help of the google map.
-7.	It can detect all traffic rules and maintain these rules
+7.	It can detect all traffic rules and maintain these rules....
 
 
