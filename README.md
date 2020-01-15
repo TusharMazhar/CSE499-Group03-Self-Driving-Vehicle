@@ -12,6 +12,6 @@ Features of our self-driving vehicle:
 6.	This car will be moved one place to another with the help of the google map.
 7.	It can detect all traffic rules and maintain these rules............
 
-Thank You .....
+Thank You ..... all
 
 
