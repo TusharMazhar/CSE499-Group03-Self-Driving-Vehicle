@@ -19,7 +19,7 @@ Features of our self-driving vehicle:
 
 Thank You ..... all
 
-# ssh key setup
+# ssh key setup for my group mates
 1. ssh-keygen
 2. cat ~/.ssh/id_rsa.pub
 3. ls ~/.ssh/*.pub
