@@ -20,6 +20,13 @@ vector<int> histrogramLaneEnd; // dynamic array created  for lANE END
 
 Point2f Source[] = {Point2f(31,145),Point2f(319,145),Point2f(6,195), Point2f(348,199)}; // 4 regions coordinate points, Stored in Source array with Point2f datatypes
 Point2f Destination[] = {Point2f(60,0),Point2f(300,0),Point2f(60,240), Point2f(300,240)};// create 4 perspective wrap points and stored in Destination array 
+
+//Machine Learning variables 
+CascadeClassifier Stop_Cascade; 
+Mat frame_Stop, RoI_Stop, gray_Stop;
+vector<Rect> Stop;
+int dist_Stop;
+
 // basic setup for our project
 void Setup ( int argc,char **argv, RaspiCam_Cv &Camera )
 {   
@@ -117,13 +124,50 @@ void LaneCenter()
 
     Result = laneCenter-frameCenter;
 }
+// Stop sign detection function
+
+void Stop_detection()
+{
+    if(!Stop_Cascade.load("//home/pi//Desktop//machineLearning//Stop_cascade.xml"))// cascade file load 
+    {
+	    printf("Unable to open stop cascade file");
+    }
+    
+    RoI_Stop = frame_Stop(Rect(0,0,360,240)); // frame dimention Rect(0,0,360,240)Rect(200,0,200,140)
+    cvtColor(RoI_Stop, gray_Stop, COLOR_RGB2GRAY); // region of interest convert to gray scale image
+    equalizeHist(gray_Stop, gray_Stop);
+    Stop_Cascade.detectMultiScale(gray_Stop, Stop);
+
+    // iterate all the points to get the stop sign
+
+    for(int i=0; i<Stop.size(); i++)
+    {   
+        // created  two points coordinate and join these two pints to make a rectangle around the stop sign
+	   Point P1(Stop[i].x, Stop[i].y); // vector x and y direction
+	   Point P2(Stop[i].x + Stop[i].width, Stop[i].y + Stop[i].height);  // vector x and y direction
+	
+	   rectangle(RoI_Stop, P1, P2, Scalar(0, 0, 255), 2); // join two points and make rectangle around the stop sign
+	   putText(RoI_Stop, "Stop Sign", P1, FONT_HERSHEY_PLAIN, 1,  Scalar(0, 0, 255, 255), 2);
+	   dist_Stop = (-1.07)*(P2.x-P1.x) + 102.597; // linear equation, y=mx+c to get distance from stop sign
+        
+       // display some text on the stop sign Frame 
+       ss.str(" ");
+       ss.clear();
+       ss<<"Distance  = "<<dist_Stop<<"cm";
+       putText(RoI_Stop, ss.str(), Point2f(1,130), 0,1, Scalar(0,0,255), 2);
+	
+    }
+    
+}
 
 // Video capture  function
 void Capture()
 {
     Camera.grab();
     Camera.retrieve( frame);
+    cvtColor(frame, frame_Stop, COLOR_BGR2RGB);
     cvtColor(frame, frame, COLOR_BGR2RGB); // convert Our BGR image to RGB color
+    
 }
 
 int main(int argc,char **argv)
@@ -155,16 +199,31 @@ int main(int argc,char **argv)
        Histrogram();
        LaneFinder();
        LaneCenter();
+       Stop_detection();
+
+    
+    if (dist_Stop > 15 && dist_Stop < 35)
+    {
+	    digitalWrite(21, 0);
+	    digitalWrite(22, 0);    //decimal = 8
+        digitalWrite(23, 0);
+	    digitalWrite(24, 1);
+	    cout<<"Stop Sign"<<endl;
+	    dist_Stop = 0;
+	
+        goto Stop_Sign;
+    }
+    
        
     //uturn implemented 
     
     if (laneEnd > 15000)
      {
        	digitalWrite(21, 1);
-	digitalWrite(22, 1);    //decimal = 7
-	digitalWrite(23, 1);
-	digitalWrite(24, 0);
-	cout<<"Lane End"<<endl;
+	    digitalWrite(22, 1);    //decimal = 7
+	    digitalWrite(23, 1);
+	    digitalWrite(24, 0);
+	    cout<<"Lane End"<<endl;
      }
     
     //uturn close
@@ -229,6 +288,8 @@ int main(int argc,char **argv)
          cout<<"Go Left3"<<endl;
     }
     
+    Stop_Sign:
+        
     // laneEnd program
     if(laneEnd>15000)
     {
@@ -289,6 +350,12 @@ int main(int argc,char **argv)
        moveWindow("Final",1280,100); // window size
        resizeWindow("Final",640,480); // resolation size
        imshow("Final",frameFinal);// show the stored value in console
+       
+       // Stop sign Image Frame
+       namedWindow("Stop Sign", WINDOW_KEEPRATIO);
+       moveWindow("Stop Sign", 1280, 580);
+       resizeWindow("Stop Sign", 640, 480);
+       imshow("Stop Sign", RoI_Stop);
        
        
        
