@@ -1,0 +1,1 @@
+#  MobileNet version2 used for object detection 
