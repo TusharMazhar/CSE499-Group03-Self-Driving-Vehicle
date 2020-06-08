@@ -2,9 +2,7 @@
                                                 Self-Driving Vehicle
 
 Main goal of this project : Our main goal of this project to help the e-commerce business platform/service based company who are dealing with product delivery. They can easily send their product to the customer by using a self-driving vehicle and the customers will be satisfied for faster delivery. As a result, their cost will be reduced and the business will grown-up exponentially.This could be useful to handicap and disable people too .
-![](imagesAboutProject/7.jpg)
-![](imagesAboutProject/2.jpg)
-![](imagesAboutProject/3.jpg)
+
 Features of our self-driving vehicle:
 1.	Lane detection
 2.	Red light detection
@@ -13,9 +11,7 @@ Features of our self-driving vehicle:
 5.	Stop sign detection
 6.	This car will be moved one place to another with the help of the google map.
 7.	It can detect all traffic rules and maintain these rules............
-![](imagesAboutProject/4.jpg)
-![](imagesAboutProject/5.jpg)
-![](imagesAboutProject/6.jpg)
+
 
 Thank You ..... all
 
